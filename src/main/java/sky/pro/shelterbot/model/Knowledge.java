@@ -14,14 +14,14 @@ public class Knowledge {
     private String codeId;
     private String question;
     private String answer;
-    private Integer version;
+    private Long version;
     private boolean hasAnswered;
     private boolean hasApproved;
 
     public Knowledge() {
     }
 
-    public Knowledge(Long id, String codeId, String question, String answer, Integer version, boolean hasAnswered, boolean hasApproved) {
+    public Knowledge(Long id, String codeId, String question, String answer, Long version, boolean hasAnswered, boolean hasApproved) {
         this.id = id;
         this.codeId = codeId;
         this.question = question;
@@ -63,11 +63,11 @@ public class Knowledge {
         this.answer = answer;
     }
 
-    public Integer getVersion() {
+    public Long getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public void setVersion(Long version) {
         this.version = version;
     }
 
