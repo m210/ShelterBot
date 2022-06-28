@@ -12,7 +12,10 @@ public class MessageHandler {
         this.telegramBot = telegramBot;
     }
 
-    // Метод обработчика входящих сообещний
+    /**
+     * Этот метод возвращает пользователю сообщение с приветствием в ответ на сообщение от пользователя типа "/start"
+     * @param message
+     */
     public void process(Message message) {
         if(message == null) {
             return;

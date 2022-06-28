@@ -32,6 +32,11 @@ public class BotUpdatesListener implements UpdatesListener {
         handler = new MessageHandler(telegramBot);
     }
 
+    /**
+     * Метод является обработчиком входящих сообщений
+     * @param updates
+     * @return
+     */
     // Обработчик приходящих сообщений (реализация метода интерфейса UpdatesListener)
     @Override
     public int process(List<Update> updates) {
