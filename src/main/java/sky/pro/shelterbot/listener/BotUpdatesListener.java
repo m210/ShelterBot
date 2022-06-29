@@ -2,13 +2,14 @@ package sky.pro.shelterbot.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sky.pro.shelterbot.MessageHandler;
+import sky.pro.shelterbot.handler.MessageHandler;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 @Service
 public class BotUpdatesListener implements UpdatesListener {
 
-    private Logger logger = LoggerFactory.getLogger(BotUpdatesListener.class);
+    private final Logger logger = LoggerFactory.getLogger(BotUpdatesListener.class);
 
     // Инжект экземляра бота, созданного в BotConfiguration
     @Autowired
@@ -29,26 +30,51 @@ public class BotUpdatesListener implements UpdatesListener {
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
-        handler = new MessageHandler(telegramBot);
+        handler = new MessageHandler();
+        handler.init(telegramBot);
     }
 
     /**
      * Метод является обработчиком входящих сообщений
-     * @param updates
+     *
+     * @param updates лист приходящих сообщений
      * @return
      */
-    // Обработчик приходящих сообщений (реализация метода интерфейса UpdatesListener)
     @Override
     public int process(List<Update> updates) {
         updates.forEach(update -> {
             logger.info("Processing update: {}", update);
 
-            // передача принимаемого сообщения в обработчик
-            handler.process(update.message());
+            // Получаем присланное сообщение
+            Message message = update.message();
+            long id = -1;
+            String text = null;
+            if (message == null) {
+                // Если пришло не сообщение, проверяем, что сообщение - нажатая кнопка inline меню
+                CallbackQuery query = update.callbackQuery();
+                if (query != null) {
+                    id = query.from().id();
+                    text = query.data();
+                }
+            } else if (hasTextMessage(message)) {
+                id = message.chat().id();
+                text = message.text();
+            }
+
+            if (id != -1) { // если сообщение имеет текст, отправляем его в обработчик
+                handler.processMessage(id, text);
+            }
         });
 
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
+    private boolean hasTextMessage(Message message) {
+        return message.text() != null;
+    }
+
+    private boolean hasPictureMessage(Message message) {
+        return message.photo() != null;
+    }
 }
 
