@@ -3,6 +3,7 @@ package sky.pro.shelterbot.message;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.request.SendMessage;
+import sky.pro.shelterbot.service.BotResponseService;
 
 /**
  * Абстрактный класс с сообщениями
@@ -12,6 +13,7 @@ public abstract class AbstractMessage {
 
 	private Keyboard keyboard;
 	private TelegramBot telegramBot;
+	private BotResponseService service;
 	
 	/**
 	 * Метод, который будет обращаться к репозиторию базы данных для получения текста ответа
@@ -45,6 +47,20 @@ public abstract class AbstractMessage {
 			message.replyMarkup(keyboard);
 		}
 		telegramBot.execute(message);
+	}
+
+	/**
+	 * @return сервис, с помощью которого сообщение получает текст ответа пользователю
+	 */
+	public BotResponseService getMessageService() {
+		return service;
+	}
+
+	/**
+	 * @param service сервис-ответчик, который берет текст ответа из БД
+	 */
+	public void setMessageService(BotResponseService service) {
+		this.service = service;
 	}
 
 }

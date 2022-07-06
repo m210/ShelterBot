@@ -1,7 +1,6 @@
 package sky.pro.shelterbot.response;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.request.Keyboard;
 
 import sky.pro.shelterbot.message.AbstractMessage;
 import sky.pro.shelterbot.message.CallVolunteerMessage;
@@ -11,6 +10,7 @@ import sky.pro.shelterbot.message.ReportMessage;
 import sky.pro.shelterbot.message.ShelterInfoMessage;
 import sky.pro.shelterbot.message.UnknownMessage;
 import sky.pro.shelterbot.message.WelcomeMessage;
+import sky.pro.shelterbot.service.BotResponseService;
 
 /**
  * Класс, который хранит в себе все используемые ботом ответы
@@ -42,6 +42,14 @@ public enum ResponseMessage {
 	 */
 	public void setBot(TelegramBot telegramBot) {
 		message.setBot(telegramBot);
+	}
+
+	/**
+	 * @param service сервис для обращения к базе данных, откуда берется
+	 *                текст для ответа
+	 */
+	public void setMessageService(BotResponseService service) {
+		message.setMessageService(service);
 	}
 
 	/**

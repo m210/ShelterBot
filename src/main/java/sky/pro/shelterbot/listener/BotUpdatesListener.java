@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sky.pro.shelterbot.handler.MessageHandler;
+import sky.pro.shelterbot.service.BotResponseService;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -23,6 +24,9 @@ public class BotUpdatesListener implements UpdatesListener {
     @Autowired
     private TelegramBot telegramBot;
 
+    @Autowired
+    private BotResponseService botResponseService;
+
     // Обработчик сообщений
     private MessageHandler handler;
 
@@ -31,7 +35,7 @@ public class BotUpdatesListener implements UpdatesListener {
     public void init() {
         telegramBot.setUpdatesListener(this);
         handler = new MessageHandler();
-        handler.init(telegramBot);
+        handler.init(telegramBot, botResponseService);
     }
 
     /**
