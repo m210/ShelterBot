@@ -1,6 +1,8 @@
 package sky.pro.shelterbot.handler;
 
 import com.pengrad.telegrambot.TelegramBot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sky.pro.shelterbot.message.MessageConstants;
 import sky.pro.shelterbot.response.ResponseMessage;
 import sky.pro.shelterbot.service.BotResponseService;
@@ -11,6 +13,8 @@ import java.util.Map;
 public class MessageHandler {
 
     private final Map<String, ResponseMessage> map = new HashMap<>();
+
+    private final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
 
     /**
      * Метод инициализации всех сообщений-ответов бота
@@ -24,6 +28,8 @@ public class MessageHandler {
 
             // каждому сообщению присваиваем сервис-ответчик, который будет брать текст ответа из БД
             message.setMessageService(shelterService);
+
+            logger.info("Initializing message: " + message);
         }
 
         // инициализация карты сообщений

@@ -2,6 +2,8 @@ package sky.pro.shelterbot.response;
 
 import com.pengrad.telegrambot.TelegramBot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sky.pro.shelterbot.message.AbstractMessage;
 import sky.pro.shelterbot.message.CallVolunteerMessage;
 import sky.pro.shelterbot.message.HowToAdoptMessage;
@@ -25,12 +27,13 @@ public enum ResponseMessage {
 	SEND_REPORT_MESSAGE(new ReportMessage()),
 	CALL_VOLUNTEER_MESSAGE(new CallVolunteerMessage()),
 	;
-	
-	
-	
 
-	
-	
+
+
+
+	private final Logger logger = LoggerFactory.getLogger(ResponseMessage.class);
+
+
 	private final AbstractMessage message;
 	
 	ResponseMessage(AbstractMessage message) {
@@ -56,6 +59,7 @@ public enum ResponseMessage {
 	 * @param id отправка ответа пользователю
 	 */
 	public void send(long id) {
+		logger.info("Send " + this);
 		message.send(id);
 	}
 }

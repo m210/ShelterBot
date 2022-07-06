@@ -55,12 +55,16 @@ public class BotUpdatesListener implements UpdatesListener {
             String text = null;
             if (message == null) {
                 // Если пришло не сообщение, проверяем, что сообщение - нажатая кнопка inline меню
+
+                logger.info("Message == null, trying to check callbackQuery");
                 CallbackQuery query = update.callbackQuery();
                 if (query != null) {
                     id = query.from().id();
                     text = query.data();
                 }
             } else if (hasTextMessage(message)) {
+                logger.info("The message has a text");
+
                 id = message.chat().id();
                 text = message.text();
             }
