@@ -2,9 +2,9 @@ package sky.pro.shelterbot.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
-import com.pengrad.telegrambot.model.CallbackQuery;
-import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.*;
+import com.pengrad.telegrambot.request.GetFile;
+import com.pengrad.telegrambot.response.GetFileResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,10 @@ import sky.pro.shelterbot.handler.MessageHandler;
 import sky.pro.shelterbot.service.BotResponseService;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -67,6 +71,28 @@ public class BotUpdatesListener implements UpdatesListener {
 
                 id = message.chat().id();
                 text = message.text();
+            } else if (hasPictureMessage(message)) {
+                logger.info("The message has a photo");
+
+                PhotoSize current = null;
+                for(PhotoSize size : message.photo()) {
+                    if(current == null || current.fileSize() < size.fileSize()) {
+                        current = size;
+                    }
+                }
+
+                if(current != null) {
+                    id = message.chat().id();
+                    text = message.caption();
+
+                    GetFile pic = new GetFile(current.fileId());
+                    GetFileResponse response = telegramBot.execute(pic);
+                    try {
+                        byte[] data = telegramBot.getFileContent(response.file());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
             if (id != -1) { // если сообщение имеет текст, отправляем его в обработчик
