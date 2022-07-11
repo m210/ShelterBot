@@ -4,14 +4,8 @@ import com.pengrad.telegrambot.TelegramBot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sky.pro.shelterbot.message.AbstractMessage;
-import sky.pro.shelterbot.message.CallVolunteerMessage;
-import sky.pro.shelterbot.message.HowToAdoptMessage;
-import sky.pro.shelterbot.message.MainMenuMessage;
-import sky.pro.shelterbot.message.ReportMessage;
-import sky.pro.shelterbot.message.ShelterInfoMessage;
-import sky.pro.shelterbot.message.UnknownMessage;
-import sky.pro.shelterbot.message.WelcomeMessage;
+import sky.pro.shelterbot.message.*;
+import sky.pro.shelterbot.message.report.*;
 import sky.pro.shelterbot.service.BotResponseService;
 
 /**
@@ -26,6 +20,13 @@ public enum ResponseMessage {
 	HOW_TO_ADOPT_MESSAGE(new HowToAdoptMessage()),
 	SEND_REPORT_MESSAGE(new ReportMessage()),
 	CALL_VOLUNTEER_MESSAGE(new CallVolunteerMessage()),
+
+	// Report messages
+	PHOTO_REPORTMESSAGE(new PhotoReportMessage()),
+	RATION_REPORTMESSAGE(new RationReportMessage()),
+	HEALTH_REPORTMESSAGE(new HealthReportMessage()),
+	BEHAVIOR_REPORTMESSAGE(new BehaviorReportMessage()),
+	COMPLETE_REPORTMESSAGE(new CompleteReportMessage().setMenu(ResponseMenu.MAIN.getKeyboard())),
 	;
 
 
@@ -61,5 +62,9 @@ public enum ResponseMessage {
 	public void send(long id) {
 		logger.info("Send " + this);
 		message.send(id);
+	}
+
+	public AbstractMessage getMessage() {
+		return message;
 	}
 }
