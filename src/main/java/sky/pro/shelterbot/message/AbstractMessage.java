@@ -41,12 +41,18 @@ public abstract class AbstractMessage {
 	 * Метод отправки ответа пользователю
 	 * @param id идентификатор пользователя, которому отправляется ответ
 	 */
-	public void send(long id) {
-		SendMessage message = new SendMessage(id, getMessageText());
+	public boolean send(long id) {
+		String text = getMessageText();
+		if(text == null) {
+			return false;
+		}
+
+		SendMessage message = new SendMessage(id, text);
 		if(keyboard != null) {
 			message.replyMarkup(keyboard);
 		}
 		telegramBot.execute(message);
+		return true;
 	}
 
 	/**

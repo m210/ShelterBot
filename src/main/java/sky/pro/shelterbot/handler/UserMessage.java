@@ -3,7 +3,7 @@ package sky.pro.shelterbot.handler;
 public class UserMessage {
 
     private String message;
-    private Long userId;
+    private long userId = -1;
     private byte[] picture;
 
     public String getMessage() {
@@ -14,11 +14,11 @@ public class UserMessage {
         this.message = message;
     }
 
-    public Long getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
