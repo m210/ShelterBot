@@ -7,10 +7,11 @@ import sky.pro.shelterbot.message.report.ReportMessage;
 import sky.pro.shelterbot.model.ReportStage;
 import sky.pro.shelterbot.response.ResponseMessage;
 import sky.pro.shelterbot.service.ReportService;
+import sky.pro.shelterbot.service.impl.ReportServiceImpl;
 
 public class ReportHandler {
 	
-	private Map<ReportStage, ResponseMessage> map = new HashMap<>();
+	private final Map<ReportStage, ResponseMessage> map = new HashMap<>();
 	private ReportStage reportStage = ReportStage.COMPLETE;
 	
 	public void init(ReportService reportService) {

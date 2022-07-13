@@ -1,10 +1,21 @@
 package sky.pro.shelterbot.handler;
 
+import com.pengrad.telegrambot.model.User;
+
 public class UserMessage {
 
+    private User user;
     private String message;
     private long userId = -1;
     private byte[] picture;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public String getMessage() {
         return message;

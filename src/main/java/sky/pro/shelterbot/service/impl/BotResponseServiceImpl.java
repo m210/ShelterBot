@@ -1,10 +1,11 @@
-package sky.pro.shelterbot.service;
+package sky.pro.shelterbot.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import sky.pro.shelterbot.model.BotResponse;
 import sky.pro.shelterbot.repository.BotResponseRepository;
+import sky.pro.shelterbot.service.BotResponseService;
 
 @Service
 public class BotResponseServiceImpl implements BotResponseService {

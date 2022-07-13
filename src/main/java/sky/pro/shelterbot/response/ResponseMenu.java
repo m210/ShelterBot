@@ -29,8 +29,9 @@ public enum ResponseMenu {
 			MessageConstants.SHELTER_RECOMMENDS,
 			MessageConstants.SHELTER_USER_CONTACTS),
 	
-	UNKNOWN(new InlineKeyboardButton("Да").callbackData(MessageConstants.CALL_VOLUNTEER));
-	
+	UNKNOWN(new InlineKeyboardButton("Да").callbackData(MessageConstants.CALL_VOLUNTEER)),
+	NEWUSER(new InlineKeyboardButton(MessageConstants.CAT_SHELTER).callbackData(MessageConstants.CAT_SHELTER),
+			new InlineKeyboardButton(MessageConstants.DOG_SHELTER).callbackData(MessageConstants.DOG_SHELTER));
 	
 	
 	

@@ -10,6 +10,10 @@ public class MessageConstants {
 	
 	public static final String MAIN_MENU = "Главное меню";
 
+	// New user
+	public static final String CAT_SHELTER = "Приют для кошек";
+	public static final String DOG_SHELTER = "Приют для собак";
+
 	// Main Menu
 	public static final String SHELTER_INFO = "Узнать информацию о приюте";
 	public static final String HOW_TO_ADOPT = "Как взять собаку из приюта";
