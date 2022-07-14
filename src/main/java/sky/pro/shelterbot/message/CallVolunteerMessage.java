@@ -8,10 +8,12 @@ public class CallVolunteerMessage extends AbstractMessage {
 	}
 	
 	@Override
-	public void send(long id) {
+	public boolean send(long id) {
 		super.send(id);
 		
 		callVolunteer();
+
+		return true;
 	}
 
 	/**

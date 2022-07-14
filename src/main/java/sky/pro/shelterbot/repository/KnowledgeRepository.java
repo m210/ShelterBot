@@ -6,4 +6,8 @@ import sky.pro.shelterbot.model.Knowledge;
 
 @Repository
 public interface KnowledgeRepository extends JpaRepository<Knowledge,Long> {
+    Knowledge findKnowledgeByQuestionContainingIgnoreCase(String question);
+
+    Knowledge findKnowledgeByCodeId(String codeId);
+
 }

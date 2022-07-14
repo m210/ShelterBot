@@ -11,13 +11,19 @@ import sky.pro.shelterbot.message.MessageConstants;
  * Класс, который хранит в себе все используемые ботом меню
  */
 public enum ResponseMenu {
-	
-	MAIN(MessageConstants.SHELTER_INFO, 
+
+	MAIN(MessageConstants.SHELTER_INFO,
 			MessageConstants.HOW_TO_ADOPT,
-			MessageConstants.SEND_REPORT, 
+			MessageConstants.SEND_REPORT,
 			MessageConstants.CALL_VOLUNTEER),
-	
-	SHELTER_INFO(MessageConstants.MAIN_MENU,
+
+	DOG_SHELTER_INFO(MessageConstants.MAIN_MENU,
+			MessageConstants.SHELTER_DESCRIPTION,
+			MessageConstants.SHELTER_ADDRESS,
+			MessageConstants.SHELTER_RECOMMENDS,
+			MessageConstants.SHELTER_USER_CONTACTS),
+
+	CAT_SHELTER_INFO(MessageConstants.MAIN_MENU,
 			MessageConstants.SHELTER_DESCRIPTION,
 			MessageConstants.SHELTER_ADDRESS,
 			MessageConstants.SHELTER_RECOMMENDS,
