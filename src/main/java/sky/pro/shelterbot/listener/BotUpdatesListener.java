@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sky.pro.shelterbot.handler.MessageHandler;
+import sky.pro.shelterbot.service.BotResponseService;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -23,6 +24,9 @@ public class BotUpdatesListener implements UpdatesListener {
     @Autowired
     private TelegramBot telegramBot;
 
+    @Autowired
+    private BotResponseService botResponseService;
+
     // Обработчик сообщений
     private MessageHandler handler;
 
@@ -31,7 +35,7 @@ public class BotUpdatesListener implements UpdatesListener {
     public void init() {
         telegramBot.setUpdatesListener(this);
         handler = new MessageHandler();
-        handler.init(telegramBot);
+        handler.init(telegramBot, botResponseService);
     }
 
     /**
@@ -51,12 +55,16 @@ public class BotUpdatesListener implements UpdatesListener {
             String text = null;
             if (message == null) {
                 // Если пришло не сообщение, проверяем, что сообщение - нажатая кнопка inline меню
+
+                logger.info("Message == null, trying to check callbackQuery");
                 CallbackQuery query = update.callbackQuery();
                 if (query != null) {
                     id = query.from().id();
                     text = query.data();
                 }
             } else if (hasTextMessage(message)) {
+                logger.info("The message has a text");
+
                 id = message.chat().id();
                 text = message.text();
             }

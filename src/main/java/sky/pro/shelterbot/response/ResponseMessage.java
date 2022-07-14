@@ -1,8 +1,9 @@
 package sky.pro.shelterbot.response;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.request.Keyboard;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sky.pro.shelterbot.message.AbstractMessage;
 import sky.pro.shelterbot.message.CallVolunteerMessage;
 import sky.pro.shelterbot.message.HowToAdoptMessage;
@@ -11,6 +12,7 @@ import sky.pro.shelterbot.message.ReportMessage;
 import sky.pro.shelterbot.message.ShelterInfoMessage;
 import sky.pro.shelterbot.message.UnknownMessage;
 import sky.pro.shelterbot.message.WelcomeMessage;
+import sky.pro.shelterbot.service.BotResponseService;
 
 /**
  * Класс, который хранит в себе все используемые ботом ответы
@@ -25,12 +27,13 @@ public enum ResponseMessage {
 	SEND_REPORT_MESSAGE(new ReportMessage()),
 	CALL_VOLUNTEER_MESSAGE(new CallVolunteerMessage()),
 	;
-	
-	
-	
 
-	
-	
+
+
+
+	private final Logger logger = LoggerFactory.getLogger(ResponseMessage.class);
+
+
 	private final AbstractMessage message;
 	
 	ResponseMessage(AbstractMessage message) {
@@ -45,9 +48,18 @@ public enum ResponseMessage {
 	}
 
 	/**
+	 * @param service сервис для обращения к базе данных, откуда берется
+	 *                текст для ответа
+	 */
+	public void setMessageService(BotResponseService service) {
+		message.setMessageService(service);
+	}
+
+	/**
 	 * @param id отправка ответа пользователю
 	 */
 	public void send(long id) {
+		logger.info("Send " + this);
 		message.send(id);
 	}
 }
