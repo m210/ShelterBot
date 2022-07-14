@@ -1,10 +1,11 @@
-package sky.pro.shelterbot.service;
+package sky.pro.shelterbot.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import sky.pro.shelterbot.model.Knowledge;
 import sky.pro.shelterbot.repository.KnowledgeRepository;
+import sky.pro.shelterbot.service.KnowledgeService;
 
 import java.util.*;
 

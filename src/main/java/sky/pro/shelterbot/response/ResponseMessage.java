@@ -13,10 +13,16 @@ import sky.pro.shelterbot.service.BotResponseService;
  * Класс, который хранит в себе все используемые ботом ответы
  */
 public enum ResponseMessage {
+	// New user messages
+		WELCOME_MESSAGE(new WelcomeMessage().setMenu(ResponseMenu.NEWUSER.getKeyboard())),
+		NEWUSER_MESSAGE(new NewUserMessage().setMenu(ResponseMenu.NEWUSER.getKeyboard())),
+		CAT_SHELTER_CHOSEN(new ChosenMessage(ShelterType.CAT_SHELTER).setMenu(ResponseMenu.MAIN.getKeyboard())),
+		DOG_SHELTER_CHOSEN(new ChosenMessage(ShelterType.DOG_SHELTER).setMenu(ResponseMenu.MAIN.getKeyboard())),
+
 	// Basic messages
 		MAIN_MENU_MESSAGE(new MainMenuMessage().setMenu(ResponseMenu.MAIN.getKeyboard())),
-		WELCOME_MESSAGE(new WelcomeMessage().setMenu(ResponseMenu.MAIN.getKeyboard())),
 		UNKNOWN_MESSAGE(new UnknownMessage().setMenu(ResponseMenu.UNKNOWN.getKeyboard())),
+
 		HOW_TO_ADOPT_MESSAGE(new HowToAdoptMessage()),
 		SEND_REPORT_MESSAGE(new ReportMessage()),
 		CALL_VOLUNTEER_MESSAGE(new CallVolunteerMessage()),

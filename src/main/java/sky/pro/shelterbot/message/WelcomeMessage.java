@@ -4,7 +4,7 @@ public class WelcomeMessage extends AbstractMessage {
 
 	@Override
 	public String getMessageText() {
-		return "Приветствую, новый пользователь!";
+		return "Приветствую, новый пользователь! Выберите интересующий Вас приют для животных";
 	}
 	
 }

@@ -13,6 +13,8 @@ import sky.pro.shelterbot.handler.MessageHandler;
 import sky.pro.shelterbot.handler.UserMessage;
 import sky.pro.shelterbot.service.BotResponseService;
 import sky.pro.shelterbot.service.ReportService;
+import sky.pro.shelterbot.service.impl.ReportServiceImpl;
+import sky.pro.shelterbot.service.UserService;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -33,6 +35,9 @@ public class BotUpdatesListener implements UpdatesListener {
     @Autowired
     private ReportService reportService;
 
+    @Autowired
+    private UserService userService;
+
     // Обработчик сообщений
     private MessageHandler handler;
 
@@ -40,7 +45,7 @@ public class BotUpdatesListener implements UpdatesListener {
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
-        handler = new MessageHandler();
+        handler = new MessageHandler(userService);
         handler.init(telegramBot, botResponseService, reportService);
     }
 
@@ -48,7 +53,7 @@ public class BotUpdatesListener implements UpdatesListener {
      * Метод является обработчиком входящих сообщений
      *
      * @param updates лист приходящих сообщений
-     * @return
+     * @return CONFIRMED_UPDATES_ALL
      */
     @Override
     public int process(List<Update> updates) {
@@ -66,17 +71,20 @@ public class BotUpdatesListener implements UpdatesListener {
                 if (query != null) {
                     userMessage.setUserId(query.from().id());
                     userMessage.setMessage(query.data());
+                    userMessage.setUser(query.from());
                 }
             } else if (hasTextMessage(message)) {
                 logger.info("The message has a text");
 
                 userMessage.setUserId(message.chat().id());
                 userMessage.setMessage(message.text());
+                userMessage.setUser(message.from());
             } else if (hasPictureMessage(message)) {
                 logger.info("The message has a photo");
 
                 userMessage.setUserId(message.chat().id());
                 userMessage.setMessage(message.caption());
+                userMessage.setUser(message.from());
 
                 PhotoSize current = null;
                 for(PhotoSize size : message.photo()) {
