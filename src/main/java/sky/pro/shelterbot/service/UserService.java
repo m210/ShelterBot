@@ -6,6 +6,8 @@ public interface UserService {
 
     ShelterUser findUserByTelegramId(long id);
 
+    ShelterUser findUserById(long id);
+
     ShelterUser save(ShelterUser user);
 
 }

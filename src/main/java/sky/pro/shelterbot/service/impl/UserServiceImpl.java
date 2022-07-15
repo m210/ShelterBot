@@ -1,6 +1,7 @@
 package sky.pro.shelterbot.service.impl;
 
 import org.springframework.stereotype.Service;
+import sky.pro.shelterbot.UserNotFoundException;
 import sky.pro.shelterbot.model.ShelterUser;
 import sky.pro.shelterbot.repository.UserRepository;
 import sky.pro.shelterbot.service.UserService;
@@ -17,6 +18,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ShelterUser findUserByTelegramId(long id) {
 		return repository.findUserByTelegramId(id);
+	}
+
+	@Override
+	public ShelterUser findUserById(long id) {
+		return repository.findById(id).orElseThrow(UserNotFoundException::new);
 	}
 
 	@Override
