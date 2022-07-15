@@ -3,6 +3,7 @@ package sky.pro.shelterbot.service.impl;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Service;
+import sky.pro.shelterbot.message.MessageConstants;
 import sky.pro.shelterbot.model.Report;
 import sky.pro.shelterbot.model.ReportResponse;
 import sky.pro.shelterbot.model.ReportStatus;
@@ -130,7 +131,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void sendMessageToUser(Long userId, String text) {
         ShelterUser user = userService.findUserById(userId);
-        SendMessage message = new SendMessage(user.getTelegramId(), text);
+        SendMessage message = new SendMessage(user.getTelegramId(), MessageConstants.VOLUNTEER_MESSAGE + text);
         telegramBot.execute(message);
     }
 
