@@ -25,7 +25,7 @@ public class UserMessage {
         this.message = message;
     }
 
-    public long getUserId() {
+    public long getUserTelegramId() {
         return userId;
     }
 

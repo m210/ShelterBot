@@ -4,20 +4,24 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.GetFile;
+import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.GetFileResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import sky.pro.shelterbot.handler.MessageHandler;
 import sky.pro.shelterbot.handler.UserMessage;
+import sky.pro.shelterbot.model.ParentUser;
 import sky.pro.shelterbot.service.BotResponseService;
 import sky.pro.shelterbot.service.ReportService;
-import sky.pro.shelterbot.service.impl.ReportServiceImpl;
 import sky.pro.shelterbot.service.UserService;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 @Service
@@ -47,6 +51,31 @@ public class BotUpdatesListener implements UpdatesListener {
         telegramBot.setUpdatesListener(this);
         handler = new MessageHandler(userService);
         handler.init(telegramBot, botResponseService, reportService);
+    }
+
+    @Scheduled(cron = "0 0/1 * * * *")
+    public void run() {
+        List<ParentUser> list = userService.findAllParents();
+        for(ParentUser user : list) {
+            LocalDate now = LocalDate.now();
+
+            Period probationPeriod = Period.between(now, user.getProbation());
+            if(probationPeriod.getDays() > 0) {
+                Period period = Period.between(user.getLastReportDate(), now);
+                int diff = period.getDays();
+
+                if (diff >= 1) {
+                    long telegramId = userService.findTelegramIdByParent(user);
+                    telegramBot.execute(new SendMessage(telegramId, "Напоминаем Вам об отправке отчета"));
+                    if(diff >= 3) {
+                        //TODO: позвать волонтера
+                        telegramBot.execute(new SendMessage(telegramId, "Вы не отправляли отчет больше 3х дней, зову волонтера!"));
+                    }
+                }
+            } else {
+                // TODO: Поздравление об окончании
+            }
+        }
     }
 
     /**
@@ -105,7 +134,7 @@ public class BotUpdatesListener implements UpdatesListener {
                 }
             }
 
-            if (userMessage.getUserId() != -1) { // если сообщение имеет текст, отправляем его в обработчик
+            if (userMessage.getUserTelegramId() != -1) { // если сообщение имеет текст, отправляем его в обработчик
                 handler.processMessage(userMessage);
             }
         });

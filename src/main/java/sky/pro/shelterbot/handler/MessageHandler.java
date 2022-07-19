@@ -4,14 +4,16 @@ import com.pengrad.telegrambot.TelegramBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sky.pro.shelterbot.message.MessageConstants;
+import sky.pro.shelterbot.model.ParentUser;
+import sky.pro.shelterbot.model.ReportStage;
 import sky.pro.shelterbot.model.ShelterType;
 import sky.pro.shelterbot.model.ShelterUser;
 import sky.pro.shelterbot.response.ResponseMessage;
 import sky.pro.shelterbot.service.BotResponseService;
 import sky.pro.shelterbot.service.ReportService;
-import sky.pro.shelterbot.service.impl.ReportServiceImpl;
 import sky.pro.shelterbot.service.UserService;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 public class MessageHandler {
@@ -58,7 +60,7 @@ public class MessageHandler {
         user.setLastName(telegramUser.lastName());
         user.setTelegramId(telegramUser.id());
         user.setType(type);
-        return userService.save(user);
+        return userService.saveUser(user);
     }
 
     /**
@@ -67,10 +69,10 @@ public class MessageHandler {
      * @param userMessage сообщение пользователя, от которого пришло сообщение
      */
     public void processMessage(UserMessage userMessage) {
-        ShelterUser user = userService.findUserByTelegramId(userMessage.getUserId());
+        ShelterUser user = userService.findUserByTelegramId(userMessage.getUserTelegramId());
         if (user == null) {
             ResponseMessage message = newUserMap.getOrDefault(userMessage.getMessage(), ResponseMessage.NEWUSER_MESSAGE)
-                    .send(userMessage.getUserId());
+                    .send(userMessage.getUserTelegramId());
 
             switch (message) {
                 default:
@@ -86,13 +88,20 @@ public class MessageHandler {
 
         Map<String, ResponseMessage> currentShelter = getMap(user.getType());
         if (reportHandler.requireReport()) {
-            if (!reportHandler.processReport(userMessage)) {
-                currentShelter.getOrDefault(MessageConstants.MAIN_MENU, ResponseMessage.UNKNOWN_MESSAGE).send(userMessage.getUserId());
+            ReportStage stage = reportHandler.processReport(userMessage);
+            if (stage == ReportStage.CANCELED) {
+                currentShelter.getOrDefault(MessageConstants.MAIN_MENU, ResponseMessage.UNKNOWN_MESSAGE).send(userMessage.getUserTelegramId());
+            } else if(stage == ReportStage.COMPLETE) {
+                ParentUser parent = userService.findParentByTelegramId(userMessage.getUserTelegramId());
+                parent.setLastReportDate(LocalDate.now());
+                userService.saveParent(parent);
             }
         } else {
             if (currentShelter.getOrDefault(userMessage.getMessage(), ResponseMessage.UNKNOWN_MESSAGE)
-                    .send(userMessage.getUserId()) == ResponseMessage.SEND_REPORT_MESSAGE) {
-                reportHandler.startReport();
+                    .send(userMessage.getUserTelegramId()) == ResponseMessage.SEND_REPORT_MESSAGE) {
+                if(userService.findParentByTelegramId(userMessage.getUserTelegramId()) == null) {
+                    ResponseMessage.NEWUSER_MESSAGE.send(userMessage.getUserTelegramId()); //TODO: сообщение о необходимости взять животное
+                } else reportHandler.startReport();
             }
         }
     }

@@ -17,7 +17,7 @@ public class PhotoReportMessage extends ReportMessage {
             return false;
         }
 
-        service.addPhoto(userMessage.getPicture(), userMessage.getUserId(), LocalDate.now());
+        service.addPhoto(userMessage.getPicture(), userMessage.getUserTelegramId(), LocalDate.now());
         return true;
     }
 }

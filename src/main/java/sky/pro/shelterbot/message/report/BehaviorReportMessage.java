@@ -17,7 +17,7 @@ public class BehaviorReportMessage extends ReportMessage {
             return false;
         }
 
-        service.addBehavior(userMessage.getMessage(), userMessage.getUserId(), LocalDate.now());
+        service.addBehavior(userMessage.getMessage(), userMessage.getUserTelegramId(), LocalDate.now());
         return true;
     }
 

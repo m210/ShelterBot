@@ -1,5 +1,7 @@
 package sky.pro.shelterbot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,7 +13,9 @@ public class Report {
     @Id
     @GeneratedValue
     private Long id;
-    private Long userId;
+    private Long parentId;
+
+    @JsonIgnore
     private byte[] photo;
     private String ration;
     private String health;
@@ -22,12 +26,12 @@ public class Report {
     public Report() {
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getParentId() {
+        return parentId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     public byte[] getPhoto() {

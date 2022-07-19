@@ -39,15 +39,15 @@ public abstract class AbstractMessage {
 	
 	/**
 	 * Метод отправки ответа пользователю
-	 * @param id идентификатор пользователя, которому отправляется ответ
+	 * @param telegramId идентификатор пользователя, которому отправляется ответ
 	 */
-	public boolean send(long id) {
+	public boolean send(long telegramId) {
 		String text = getMessageText();
 		if(text == null) {
 			return false;
 		}
 
-		SendMessage message = new SendMessage(id, text);
+		SendMessage message = new SendMessage(telegramId, text);
 		if(keyboard != null) {
 			message.replyMarkup(keyboard);
 		}

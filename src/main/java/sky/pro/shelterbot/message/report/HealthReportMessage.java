@@ -17,7 +17,7 @@ public class HealthReportMessage extends ReportMessage {
             return false;
         }
 
-        service.addHealth(userMessage.getMessage(), userMessage.getUserId(), LocalDate.now());
+        service.addHealth(userMessage.getMessage(), userMessage.getUserTelegramId(), LocalDate.now());
         return true;
     }
 }

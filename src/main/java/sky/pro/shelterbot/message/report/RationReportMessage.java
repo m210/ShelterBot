@@ -17,7 +17,7 @@ public class RationReportMessage extends ReportMessage {
             return false;
         }
 
-        service.addRation(userMessage.getMessage(), userMessage.getUserId(), LocalDate.now());
+        service.addRation(userMessage.getMessage(), userMessage.getUserTelegramId(), LocalDate.now());
         return true;
     }
 
