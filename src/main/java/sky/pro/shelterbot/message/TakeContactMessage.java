@@ -11,7 +11,7 @@ public class TakeContactMessage extends AbstractMessage {
 
     @Override
     public String getMessageText() {
-        return "Ваша заявка на привлечение волонтера зарегистрирована под номером: ";
+        return getMessageService().getResponseMessage(MessageConstants.USER_CONTACTS);
     }
 
     public void setCallVolunteerService(CallVolunteerService callVolunteerService) {

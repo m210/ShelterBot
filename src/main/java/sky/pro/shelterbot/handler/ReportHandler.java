@@ -21,7 +21,9 @@ public class ReportHandler {
 		map.put(ReportStage.COMPLETE, ResponseMessage.COMPLETE_REPORTMESSAGE);
 		
 		for(ResponseMessage message : map.values()) {
-			((ReportMessage) message.getMessage()).setService(reportService);
+			if(message.getMessage() instanceof ReportMessage) {
+				((ReportMessage) message.getMessage()).setService(reportService);
+			}
 		}
 		((ReportMessage) ResponseMessage.SEND_REPORT_MESSAGE.getMessage()).setService(reportService);
 	}

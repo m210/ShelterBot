@@ -13,20 +13,47 @@ public enum ResponseMenu {
 
 	MAIN(MessageConstants.SHELTER_INFO,
 			MessageConstants.HOW_TO_ADOPT,
+			MessageConstants.CALL_VOLUNTEER),
+
+	PARENT_MAIN(MessageConstants.SHELTER_INFO,
+			MessageConstants.HOW_TO_ADOPT,
 			MessageConstants.SEND_REPORT,
 			MessageConstants.CALL_VOLUNTEER),
 
 	DOG_SHELTER_INFO(MessageConstants.MAIN_MENU,
 			MessageConstants.SHELTER_DESCRIPTION,
 			MessageConstants.SHELTER_ADDRESS,
+			MessageConstants.SHELTER_SUCURITY_CONTACTS,
 			MessageConstants.SHELTER_RECOMMENDS,
-			MessageConstants.SHELTER_CONTACTS),
+			MessageConstants.SEND_CONTACTS),
 
 	CAT_SHELTER_INFO(MessageConstants.MAIN_MENU,
 			MessageConstants.SHELTER_DESCRIPTION,
 			MessageConstants.SHELTER_ADDRESS,
+			MessageConstants.SHELTER_SUCURITY_CONTACTS,
 			MessageConstants.SHELTER_RECOMMENDS,
-			MessageConstants.SHELTER_CONTACTS),
+			MessageConstants.SEND_CONTACTS),
+
+	HOW_TO_ADOPT_CAT(MessageConstants.MAIN_MENU,
+			MessageConstants.HOW_TO_DATING_RULES,
+			MessageConstants.HOW_TO_DOCUMENTS,
+			MessageConstants.HOW_TO_TRANSPORTING,
+			MessageConstants.HOW_TO_IMPOVEMENT_YOUNG,
+			MessageConstants.HOW_TO_IMPOVEMENT_ADULT,
+			MessageConstants.HOW_TO_IMPOVEMENT_HANDICAPPED,
+			MessageConstants.HOW_TO_REFUSAL,
+			MessageConstants.SEND_CONTACTS),
+
+	HOW_TO_ADOPT_DOG(MessageConstants.MAIN_MENU, MessageConstants.HOW_TO_DATING_RULES,
+			MessageConstants.HOW_TO_DOCUMENTS,
+			MessageConstants.HOW_TO_TRANSPORTING,
+			MessageConstants.HOW_TO_IMPOVEMENT_YOUNG,
+			MessageConstants.HOW_TO_IMPOVEMENT_ADULT,
+			MessageConstants.HOW_TO_IMPOVEMENT_HANDICAPPED,
+			MessageConstants.HOW_TO_KENOLOGIST_RECOMMENDS,
+			MessageConstants.HOW_TO_KENOLOGIST_ADVICE,
+			MessageConstants.HOW_TO_REFUSAL,
+			MessageConstants.SEND_CONTACTS),
 	
 	UNKNOWN(new InlineKeyboardButton("Да").callbackData(MessageConstants.CALL_VOLUNTEER)),
 	NEWUSER(new InlineKeyboardButton(MessageConstants.CAT_SHELTER).callbackData(MessageConstants.CAT_SHELTER),
@@ -65,7 +92,7 @@ public enum ResponseMenu {
 			if(keyboard == null) {
 				keyboard = new ReplyKeyboardMarkup(button);
 			} else {
-				if(button.equals(MessageConstants.CALL_VOLUNTEER)) {
+				if(button.equals(MessageConstants.CALL_VOLUNTEER) || button.equals(MessageConstants.SEND_CONTACTS)) {
 					keyboard.addRow(new KeyboardButton(button).requestContact(true));
 				} else keyboard.addRow(button);
 			}

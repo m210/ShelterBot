@@ -8,7 +8,8 @@ public class RationReportMessage extends ReportMessage {
 
     @Override
     public String getMessageText() {
-        return "Пожалуйста, пришлите данные о рационе животного. Не менее 10 символов";
+        return getMessageService().getResponseMessage("/report_ration");
+        //return "Пожалуйста, пришлите данные о рационе животного. Не менее 10 символов";
     }
 
     @Override

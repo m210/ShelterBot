@@ -1,6 +1,7 @@
 package sky.pro.shelterbot.message.report;
 
 import sky.pro.shelterbot.handler.UserMessage;
+import sky.pro.shelterbot.message.MessageConstants;
 
 import java.time.LocalDate;
 
@@ -8,7 +9,7 @@ public class PhotoReportMessage extends ReportMessage {
 
     @Override
     public String getMessageText() {
-        return "Отправьте фотографию животного";
+        return getMessageService().getResponseMessage("/report_pic");
     }
 
     @Override

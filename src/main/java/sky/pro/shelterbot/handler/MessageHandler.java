@@ -5,7 +5,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import sky.pro.shelterbot.message.CallVolunteerMessage;
+import sky.pro.shelterbot.message.MainMenuMessage;
 import sky.pro.shelterbot.message.MessageConstants;
 import sky.pro.shelterbot.message.TakeContactMessage;
 import sky.pro.shelterbot.model.ParentUser;
@@ -68,6 +68,7 @@ public class MessageHandler {
         catMap.init();
         reportHandler.init(reportService);
 
+        ((MainMenuMessage) ResponseMessage.MAIN_MENU_MESSAGE.getMessage()).setUserService(userService);
         ((TakeContactMessage) ResponseMessage.TAKE_CONTACT.getMessage()).setCallVolunteerService(callVolunteerService);
     }
 
@@ -82,7 +83,7 @@ public class MessageHandler {
         if (reportHandler.requireReport()) {
             ReportStage stage = reportHandler.processReport(userMessage);
             if (stage == ReportStage.CANCELED) {
-                currentShelter.getOrDefault(MessageConstants.MAIN_MENU, ResponseMessage.UNKNOWN_MESSAGE).send(userMessage);
+                ResponseMessage.MAIN_MENU_MESSAGE.send(userMessage);
             } else if(stage == ReportStage.COMPLETE) {
                 ParentUser parent = userService.findParentByTelegramId(userMessage.getUserTelegramId());
                 parent.setLastReportDate(LocalDateTime.now());
@@ -93,6 +94,8 @@ public class MessageHandler {
                 currentShelter.getOrDefault(userMessage.getMessage(), ResponseMessage.NEWUSER_MESSAGE).send(userMessage);
             } else {
                 ResponseMessage response = currentShelter.getOrDefault(userMessage.getMessage(), ResponseMessage.UNKNOWN_MESSAGE).send(userMessage);
+
+
                 if (response == ResponseMessage.SEND_REPORT_MESSAGE) {
                     if(userService.findParentByTelegramId(userMessage.getUserTelegramId()) == null) {
                         telegramBot.execute(new SendMessage(userMessage.getUserTelegramId(), "У Вас нет животного, по которому надо отчитываться"));

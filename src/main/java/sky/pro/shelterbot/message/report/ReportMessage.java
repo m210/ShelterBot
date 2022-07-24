@@ -3,6 +3,7 @@ package sky.pro.shelterbot.message.report;
 import com.pengrad.telegrambot.request.SendMessage;
 import sky.pro.shelterbot.handler.UserMessage;
 import sky.pro.shelterbot.message.AbstractMessage;
+import sky.pro.shelterbot.message.MessageConstants;
 import sky.pro.shelterbot.model.ParentUser;
 import sky.pro.shelterbot.service.ReportService;
 
@@ -20,7 +21,7 @@ public class ReportMessage extends AbstractMessage {
 
 	@Override
 	public String getMessageText() {
-		return "Для начала отправьте фотографию животного";
+		return getMessageService().getResponseMessage("/report_start");
 	}
 
 	@Override

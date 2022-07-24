@@ -17,7 +17,9 @@ public class ChosenMessage extends AbstractMessage {
 
     @Override
     public String getMessageText() {
-        return "Добро пожаловать в приют для " + ((type == ShelterType.CAT_SHELTER) ? "кошек!" : "собак!");
+        if(type == ShelterType.CAT_SHELTER) {
+            return getMessageService().getResponseMessage(MessageConstants.CAT_SHELTER);
+        } else return getMessageService().getResponseMessage(MessageConstants.DOG_SHELTER);
     }
 
     public void setUserService(UserService userService) {

@@ -8,7 +8,8 @@ public class BehaviorReportMessage extends ReportMessage {
 
     @Override
     public String getMessageText() {
-        return "Пожалуйста, пришлите данные об изменениях в поступках животного. Не менее 10 символов";
+        return getMessageService().getResponseMessage("/report_behavior");
+//        return "Пожалуйста, пришлите данные об изменениях в поступках животного. Не менее 10 символов";
     }
 
     @Override

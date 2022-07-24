@@ -12,7 +12,7 @@ import sky.pro.shelterbot.service.BotResponseService;
  */
 public abstract class AbstractMessage {
 
-	private Keyboard[] keyboard;
+	private Keyboard keyboard;
 	protected TelegramBot telegramBot;
 	private BotResponseService service;
 	
@@ -25,7 +25,7 @@ public abstract class AbstractMessage {
 	/**
 	 * @param keyboard присвоение экземпляра меню к сообщению для дальнейших действий
 	 */
-	public AbstractMessage setMenu(Keyboard... keyboard) {
+	public AbstractMessage setMenu(Keyboard keyboard) {
 		this.keyboard = keyboard;
 		return this;
 	}
@@ -50,9 +50,7 @@ public abstract class AbstractMessage {
 
 		SendMessage message = new SendMessage(userMessage.getUserTelegramId(), text);
 		if(keyboard != null) {
-			for(Keyboard k : keyboard) {
-				message.replyMarkup(k);
-			}
+			message.replyMarkup(keyboard);
 		}
 		telegramBot.execute(message);
 		return true;
