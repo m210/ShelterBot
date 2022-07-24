@@ -52,14 +52,19 @@ public class BotUpdatesListener implements UpdatesListener {
     }
 
     //@Scheduled(cron = "*/1 * * * * *") //sec
-    //@Scheduled(cron = "0 0/1 * * * *") //minute
-    @Scheduled(cron = "0 0 10-22 * * *") //since 10 to 22 o'clock of every day.
+    @Scheduled(cron = "0 0/1 * * * *") //minute
+    //@Scheduled(cron = "0 0 10-22 * * *") //since 10 to 22 o'clock of every day.
     public void run() {
         List<ParentUser> list = userService.findAllParents();
         for(ParentUser parent : list) {
             LocalDateTime now = LocalDateTime.now();
+            LocalDateTime probation = parent.getProbation();
 
-            Period probationPeriod = Period.between(now.toLocalDate(), parent.getProbation().toLocalDate());
+            Period probationPeriod = null;
+            if(probation != null) {
+                probationPeriod = Period.between(now.toLocalDate(), probation.toLocalDate());
+            }
+
             if(probationPeriod != null && probationPeriod.getDays() > 0) {
                 Period period = Period.between(parent.getLastReportDate().toLocalDate(), now.toLocalDate());
                 int diff = period.getDays();
@@ -75,7 +80,7 @@ public class BotUpdatesListener implements UpdatesListener {
                     userService.saveParent(parent);
                 }
             } else {
-                if(probationPeriod != null) {
+                if(probation != null) {
                     telegramBot.execute(new SendMessage(userService.findTelegramIdByParent(parent), "Поздравляем! Вы прошли испытательный срок."));
                     parent.setProbation(null);
                     userService.saveParent(parent);
