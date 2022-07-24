@@ -12,6 +12,9 @@ public class DogMap extends HashMap<String, ResponseMessage> {
         put(MessageConstants.BOT_START, ResponseMessage.WELCOME_MESSAGE);
         put(MessageConstants.MAIN_MENU, ResponseMessage.MAIN_MENU_MESSAGE);
 
+        // Basic
+            put(MessageConstants.USER_CONTACTS, ResponseMessage.TAKE_CONTACT);
+
         // In main menu
         put(MessageConstants.SHELTER_INFO, ResponseMessage.DOG_SHELTER_INFO_MESSAGE);
         put(MessageConstants.HOW_TO_ADOPT, ResponseMessage.HOW_TO_ADOPT_MESSAGE);
@@ -22,7 +25,7 @@ public class DogMap extends HashMap<String, ResponseMessage> {
         put(MessageConstants.SHELTER_DESCRIPTION, ResponseMessage.DOG_SHELTER_DESCRIPTION);
         put(MessageConstants.SHELTER_ADDRESS, ResponseMessage.UNKNOWN_MESSAGE); //TODO: ResponseMessage
         put(MessageConstants.SHELTER_RECOMMENDS, ResponseMessage.UNKNOWN_MESSAGE); //TODO: ResponseMessage
-        put(MessageConstants.SHELTER_USER_CONTACTS, ResponseMessage.UNKNOWN_MESSAGE); //TODO: ResponseMessage
+        put(MessageConstants.SHELTER_CONTACTS, ResponseMessage.UNKNOWN_MESSAGE); //TODO: ResponseMessage
 	}
 
 }

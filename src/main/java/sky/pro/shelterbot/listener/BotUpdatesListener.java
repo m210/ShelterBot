@@ -13,14 +13,16 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import sky.pro.shelterbot.handler.MessageHandler;
 import sky.pro.shelterbot.handler.UserMessage;
+import sky.pro.shelterbot.message.MessageConstants;
 import sky.pro.shelterbot.model.ParentUser;
 import sky.pro.shelterbot.service.BotResponseService;
+import sky.pro.shelterbot.service.CallVolunteerService;
 import sky.pro.shelterbot.service.ReportService;
 import sky.pro.shelterbot.service.UserService;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
 
@@ -34,46 +36,46 @@ public class BotUpdatesListener implements UpdatesListener {
     private TelegramBot telegramBot;
 
     @Autowired
-    private BotResponseService botResponseService;
-
-    @Autowired
-    private ReportService reportService;
-
-    @Autowired
     private UserService userService;
 
+    @Autowired
+    private CallVolunteerService callVolunteerService;
+
     // Обработчик сообщений
+    @Autowired
     private MessageHandler handler;
 
     // Настройка в качестве листинера (обработчика сообщений) объект данного класса
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
-        handler = new MessageHandler(userService);
-        handler.init(telegramBot, botResponseService, reportService);
     }
 
-    @Scheduled(cron = "0 0/1 * * * *")
+    //@Scheduled(cron = "*/1 * * * * *") //sec
+    //@Scheduled(cron = "0 0/1 * * * *") //minute
+    @Scheduled(cron = "0 0 10-22 * * *") //since 10 to 22 o'clock of every day.
     public void run() {
         List<ParentUser> list = userService.findAllParents();
-        for(ParentUser user : list) {
-            LocalDate now = LocalDate.now();
+        for(ParentUser parent : list) {
+            LocalDateTime now = LocalDateTime.now();
 
-            Period probationPeriod = Period.between(now, user.getProbation());
+            Period probationPeriod = Period.between(now.toLocalDate(), parent.getProbation().toLocalDate());
             if(probationPeriod.getDays() > 0) {
-                Period period = Period.between(user.getLastReportDate(), now);
+                Period period = Period.between(parent.getLastReportDate().toLocalDate(), now.toLocalDate());
                 int diff = period.getDays();
 
-                if (diff >= 1) {
-                    long telegramId = userService.findTelegramIdByParent(user);
+                if (diff >= 1 && (parent.getLastNotification() == null || now.isAfter(parent.getLastNotification()))) {
+                    long telegramId = userService.findTelegramIdByParent(parent);
                     telegramBot.execute(new SendMessage(telegramId, "Напоминаем Вам об отправке отчета"));
                     if(diff >= 3) {
-                        //TODO: позвать волонтера
                         telegramBot.execute(new SendMessage(telegramId, "Вы не отправляли отчет больше 3х дней, зову волонтера!"));
+                        callVolunteerService.saveCall(parent);
                     }
+                    parent.setLastNotification(now.plusHours(6));
+                    userService.saveParent(parent);
                 }
             } else {
-                // TODO: Поздравление об окончании
+                telegramBot.execute(new SendMessage(userService.findTelegramIdByParent(parent), "Поздравляем! Вы прошли испытательный срок."));
             }
         }
     }
@@ -107,6 +109,13 @@ public class BotUpdatesListener implements UpdatesListener {
 
                 userMessage.setUserId(message.chat().id());
                 userMessage.setMessage(message.text());
+                userMessage.setUser(message.from());
+            } else if (hasContacts(message)) {
+                logger.info("The message has a contact");
+
+                userMessage.setUserId(message.chat().id());
+                userMessage.setMessage(MessageConstants.USER_CONTACTS);
+                userMessage.setContact(message.contact());
                 userMessage.setUser(message.from());
             } else if (hasPictureMessage(message)) {
                 logger.info("The message has a photo");
@@ -144,6 +153,10 @@ public class BotUpdatesListener implements UpdatesListener {
 
     private boolean hasTextMessage(Message message) {
         return message.text() != null;
+    }
+
+    private boolean hasContacts(Message message) {
+        return message.contact() != null;
     }
 
     private boolean hasPictureMessage(Message message) {

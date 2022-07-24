@@ -2,6 +2,7 @@ package sky.pro.shelterbot.handler;
 
 import java.util.HashMap;
 
+import sky.pro.shelterbot.message.CallVolunteerMessage;
 import sky.pro.shelterbot.message.MessageConstants;
 import sky.pro.shelterbot.response.ResponseMessage;
 
@@ -11,7 +12,9 @@ public class CatMap extends HashMap<String, ResponseMessage> {
 		// инициализация карты сообщений
         put(MessageConstants.BOT_START, ResponseMessage.WELCOME_MESSAGE);
         put(MessageConstants.MAIN_MENU, ResponseMessage.MAIN_MENU_MESSAGE);
-        
+
+        // Basic
+        put(MessageConstants.USER_CONTACTS, ResponseMessage.TAKE_CONTACT);
         
         // In main menu
         put(MessageConstants.SHELTER_INFO, ResponseMessage.CAT_SHELTER_INFO_MESSAGE);
@@ -23,6 +26,6 @@ public class CatMap extends HashMap<String, ResponseMessage> {
         put(MessageConstants.SHELTER_DESCRIPTION, ResponseMessage.CAT_SHELTER_DESCRIPTION);
         put(MessageConstants.SHELTER_ADDRESS, ResponseMessage.UNKNOWN_MESSAGE); //TODO: ResponseMessage
         put(MessageConstants.SHELTER_RECOMMENDS, ResponseMessage.UNKNOWN_MESSAGE); //TODO: ResponseMessage
-        put(MessageConstants.SHELTER_USER_CONTACTS, ResponseMessage.UNKNOWN_MESSAGE); //TODO: ResponseMessage
+        put(MessageConstants.SHELTER_CONTACTS, ResponseMessage.UNKNOWN_MESSAGE); //TODO: ResponseMessage
 	}
 }

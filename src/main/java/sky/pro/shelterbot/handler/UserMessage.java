@@ -1,5 +1,6 @@
 package sky.pro.shelterbot.handler;
 
+import com.pengrad.telegrambot.model.Contact;
 import com.pengrad.telegrambot.model.User;
 
 public class UserMessage {
@@ -8,6 +9,7 @@ public class UserMessage {
     private String message;
     private long userId = -1;
     private byte[] picture;
+    private Contact contact;
 
     public User getUser() {
         return user;
@@ -15,6 +17,18 @@ public class UserMessage {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 
     public String getMessage() {

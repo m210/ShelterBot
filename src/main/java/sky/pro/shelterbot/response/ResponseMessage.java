@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sky.pro.shelterbot.handler.UserMessage;
 import sky.pro.shelterbot.message.*;
 import sky.pro.shelterbot.message.report.*;
 import sky.pro.shelterbot.model.ShelterType;
@@ -26,6 +27,7 @@ public enum ResponseMessage {
 		HOW_TO_ADOPT_MESSAGE(new HowToAdoptMessage()),
 		SEND_REPORT_MESSAGE(new ReportMessage()),
 		CALL_VOLUNTEER_MESSAGE(new CallVolunteerMessage()),
+		TAKE_CONTACT(new TakeContactMessage()),
 
 	// Report messages
 		PHOTO_REPORTMESSAGE(new PhotoReportMessage()),
@@ -71,13 +73,13 @@ public enum ResponseMessage {
 	}
 
 	/**
-	 * @param id отправка ответа пользователю
+	 * @param userMessage класс с информацией о принятом сообщении от пользователя
 	 */
-	public ResponseMessage send(long id) {
+	public ResponseMessage send(UserMessage userMessage) {
 		logger.info("Send " + this);
-		if(!message.send(id)) {
+		if(!message.send(userMessage)) {
 			logger.error("The message was not be sent: " + this);
-			return ResponseMessage.UNKNOWN_MESSAGE.send(id);
+			return ResponseMessage.UNKNOWN_MESSAGE.send(userMessage);
 		}
 
 		return this;

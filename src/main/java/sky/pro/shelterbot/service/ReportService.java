@@ -1,6 +1,6 @@
 package sky.pro.shelterbot.service;
 
-import sky.pro.shelterbot.model.ReportResponse;
+import sky.pro.shelterbot.model.Report;
 import sky.pro.shelterbot.model.ReportStatus;
 
 import java.time.LocalDate;
@@ -16,11 +16,21 @@ public interface ReportService {
 
     void addBehavior(String text, Long fromUser, LocalDate date);
 
-    List<ReportResponse> findReportsWithStatus(ReportStatus status);
+    Report findReportById(long reportId);
 
-    List<ReportResponse> findWrongReports();
+    List<Report> findAllReports();
+
+    List<Report> findReportsWithStatus(ReportStatus status);
+
+    List<Report> findWrongReports();
 
     byte[] getReportPhoto(Long reportId);
 
     void sendMessageToUser(Long userId, String message);
+
+    boolean isReportingAllowed(Long telegramId);
+
+    List<Report> findAllReportsByParentId(ReportStatus status, long parentId);
+
+    Report setReportStatus(long reportId, ReportStatus status);
 }

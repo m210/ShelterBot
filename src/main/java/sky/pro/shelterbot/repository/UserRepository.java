@@ -6,6 +6,9 @@ import sky.pro.shelterbot.model.ShelterUser;
 
 import java.util.List;
 
+/**
+ * Репозиторий, в котором хранятся все пользователи, написавшие боту
+ */
 public interface UserRepository extends JpaRepository<ShelterUser, Long>  {
 
     ShelterUser findUserByTelegramId(long telegramId);

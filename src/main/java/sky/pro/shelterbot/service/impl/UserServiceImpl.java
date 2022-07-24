@@ -3,6 +3,7 @@ package sky.pro.shelterbot.service.impl;
 import org.springframework.stereotype.Service;
 import sky.pro.shelterbot.UserNotFoundException;
 import sky.pro.shelterbot.model.ParentUser;
+import sky.pro.shelterbot.model.ShelterType;
 import sky.pro.shelterbot.model.ShelterUser;
 import sky.pro.shelterbot.repository.ParentRepository;
 import sky.pro.shelterbot.repository.UserRepository;
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ParentUser registerAsParent(long userId) {
+	public ParentUser registerAsParent(long userId, String phoneNumber) {
 		Optional<ShelterUser> user = userRepository.findById(userId);
 		if(user.isEmpty()) {
 			return null;
@@ -63,6 +64,7 @@ public class UserServiceImpl implements UserService {
 
 		ParentUser parent = new ParentUser();
 		parent.setShelterUserId(userId);
+		parent.setPhoneNumber(phoneNumber);
 		return parentRepository.save(parent);
 	}
 
@@ -73,7 +75,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ShelterUser findUserByTelegramId(long id) {
-		return userRepository.findUserByTelegramId(id);
+		ShelterUser user = userRepository.findUserByTelegramId(id);
+		if(user == null) {
+			user = new ShelterUser();
+			user.setType(ShelterType.NEWUSER);
+			user.setId(-1L);
+		}
+
+		return user;
 	}
 
 	@Override

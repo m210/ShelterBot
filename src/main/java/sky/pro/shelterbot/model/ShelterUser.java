@@ -1,5 +1,7 @@
 package sky.pro.shelterbot.model;
 
+import com.pengrad.telegrambot.model.Contact;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;

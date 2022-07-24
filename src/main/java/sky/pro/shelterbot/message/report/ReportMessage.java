@@ -24,12 +24,12 @@ public class ReportMessage extends AbstractMessage {
 	}
 
 	@Override
-	public boolean send(long telegramId) {
-		if(!service.isReportingAllowed(telegramId)) {
+	public boolean send(UserMessage userMessage) {
+		if(!service.isReportingAllowed(userMessage.getUserTelegramId())) {
 			return true;
 		}
 
-		return super.send(telegramId);
+		return super.send(userMessage);
 	}
 
 	public boolean processReport(UserMessage userMessage) {

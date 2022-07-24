@@ -1,9 +1,6 @@
 package sky.pro.shelterbot.response;
 
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.Keyboard;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.*;
 
 import sky.pro.shelterbot.message.MessageConstants;
 
@@ -11,6 +8,8 @@ import sky.pro.shelterbot.message.MessageConstants;
  * Класс, который хранит в себе все используемые ботом меню
  */
 public enum ResponseMenu {
+
+	EMPTY(),
 
 	MAIN(MessageConstants.SHELTER_INFO,
 			MessageConstants.HOW_TO_ADOPT,
@@ -21,13 +20,13 @@ public enum ResponseMenu {
 			MessageConstants.SHELTER_DESCRIPTION,
 			MessageConstants.SHELTER_ADDRESS,
 			MessageConstants.SHELTER_RECOMMENDS,
-			MessageConstants.SHELTER_USER_CONTACTS),
+			MessageConstants.SHELTER_CONTACTS),
 
 	CAT_SHELTER_INFO(MessageConstants.MAIN_MENU,
 			MessageConstants.SHELTER_DESCRIPTION,
 			MessageConstants.SHELTER_ADDRESS,
 			MessageConstants.SHELTER_RECOMMENDS,
-			MessageConstants.SHELTER_USER_CONTACTS),
+			MessageConstants.SHELTER_CONTACTS),
 	
 	UNKNOWN(new InlineKeyboardButton("Да").callbackData(MessageConstants.CALL_VOLUNTEER)),
 	NEWUSER(new InlineKeyboardButton(MessageConstants.CAT_SHELTER).callbackData(MessageConstants.CAT_SHELTER),
@@ -46,13 +45,16 @@ public enum ResponseMenu {
 	 * @param buttons кнопки из которых формируется меню
 	 */
 	ResponseMenu(InlineKeyboardButton... buttons) {
-		InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
-		for(InlineKeyboardButton button : buttons) {
-			keyboard.addRow(button);
-		}
-		this.keyboard = keyboard;
+		this.keyboard = new InlineKeyboardMarkup(buttons);
 	}
-	
+
+	/**
+	 * Конструктор без параметров удаляет меню
+	 */
+	ResponseMenu() {
+		this.keyboard = new ReplyKeyboardRemove();
+	}
+
 	/**
 	 * Конструктор reply кнопок (раскрывающееся меню с кнопками)
 	 * @param buttons кнопки из которых формируется меню
@@ -63,7 +65,9 @@ public enum ResponseMenu {
 			if(keyboard == null) {
 				keyboard = new ReplyKeyboardMarkup(button);
 			} else {
-				keyboard.addRow(button);
+				if(button.equals(MessageConstants.CALL_VOLUNTEER)) {
+					keyboard.addRow(new KeyboardButton(button).requestContact(true));
+				} else keyboard.addRow(button);
 			}
 		}
 

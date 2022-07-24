@@ -3,6 +3,7 @@ package sky.pro.shelterbot.message;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.request.SendMessage;
+import sky.pro.shelterbot.handler.UserMessage;
 import sky.pro.shelterbot.service.BotResponseService;
 
 /**
@@ -11,8 +12,8 @@ import sky.pro.shelterbot.service.BotResponseService;
  */
 public abstract class AbstractMessage {
 
-	private Keyboard keyboard;
-	private TelegramBot telegramBot;
+	private Keyboard[] keyboard;
+	protected TelegramBot telegramBot;
 	private BotResponseService service;
 	
 	/**
@@ -24,7 +25,7 @@ public abstract class AbstractMessage {
 	/**
 	 * @param keyboard присвоение экземпляра меню к сообщению для дальнейших действий
 	 */
-	public AbstractMessage setMenu(Keyboard keyboard) {
+	public AbstractMessage setMenu(Keyboard... keyboard) {
 		this.keyboard = keyboard;
 		return this;
 	}
@@ -39,17 +40,19 @@ public abstract class AbstractMessage {
 	
 	/**
 	 * Метод отправки ответа пользователю
-	 * @param telegramId идентификатор пользователя, которому отправляется ответ
+	 * @param userMessage информация о сообщении пользователя, которому отправляется ответ
 	 */
-	public boolean send(long telegramId) {
+	public boolean send(UserMessage userMessage) {
 		String text = getMessageText();
 		if(text == null) {
 			return false;
 		}
 
-		SendMessage message = new SendMessage(telegramId, text);
+		SendMessage message = new SendMessage(userMessage.getUserTelegramId(), text);
 		if(keyboard != null) {
-			message.replyMarkup(keyboard);
+			for(Keyboard k : keyboard) {
+				message.replyMarkup(k);
+			}
 		}
 		telegramBot.execute(message);
 		return true;

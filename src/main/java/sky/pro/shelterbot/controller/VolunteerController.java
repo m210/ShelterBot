@@ -7,9 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sky.pro.shelterbot.UserNotFoundException;
-import sky.pro.shelterbot.model.ParentUser;
-import sky.pro.shelterbot.model.Report;
-import sky.pro.shelterbot.model.ReportStatus;
+import sky.pro.shelterbot.model.*;
+import sky.pro.shelterbot.service.CallVolunteerService;
 import sky.pro.shelterbot.service.ReportService;
 import sky.pro.shelterbot.service.UserService;
 
@@ -21,10 +20,12 @@ public class VolunteerController {
 
     private final ReportService reportService;
     private final UserService userService;
+    private final CallVolunteerService callVolunteerService;
 
-    public VolunteerController(ReportService reportService, UserService userService) {
+    public VolunteerController(ReportService reportService, UserService userService, CallVolunteerService callVolunteerService) {
         this.reportService = reportService;
         this.userService = userService;
+        this.callVolunteerService = callVolunteerService;
     }
 
     @GetMapping("findParentById")
@@ -37,13 +38,13 @@ public class VolunteerController {
     }
 
     @GetMapping("registerUserAsParent")
-    public ResponseEntity<ParentUser> registerUserAsParent(long userId) {
+    public ResponseEntity<ParentUser> registerUserAsParent(long userId, String phoneNumber) {
         ParentUser user = userService.findParentByUserId(userId);
         if(user != null) {
             return ResponseEntity.ok(user);
         }
 
-        user = userService.registerAsParent(userId);
+        user = userService.registerAsParent(userId, phoneNumber);
         if(user == null) {
             return ResponseEntity.notFound().build();
         }
@@ -55,6 +56,12 @@ public class VolunteerController {
     @GetMapping("findAllParents")
     public ResponseEntity<List<ParentUser>> findAllUsers() {
         List<ParentUser> list = userService.findAllParents();
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("findAllNewCalls")
+    public ResponseEntity<List<CallVolunteer>> findAllNewCalls(ShelterType type) {
+        List<CallVolunteer> list = callVolunteerService.findNewCalls(type);
         return ResponseEntity.ok(list);
     }
 

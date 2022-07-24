@@ -21,7 +21,7 @@ public interface UserService {
 
     ParentUser saveParent(ParentUser parent);
 
-    ParentUser registerAsParent(long userId);
+    ParentUser registerAsParent(long userId, String phoneNumber);
 
     List<ParentUser> findAllParents();
 

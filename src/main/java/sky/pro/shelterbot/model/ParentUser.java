@@ -3,7 +3,7 @@ package sky.pro.shelterbot.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class ParentUser {
@@ -12,19 +12,29 @@ public class ParentUser {
     @GeneratedValue
     private Long id;
     private Long shelterUserId;
-    private LocalDate lastReportDate;
-    private LocalDate probation;
+    private String phoneNumber;
+    private LocalDateTime lastReportDate;
+    private LocalDateTime lastNotification;
+    private LocalDateTime probation;
 
     public ParentUser() {
-        lastReportDate = LocalDate.now();
+        lastReportDate = LocalDateTime.now();
         probation = lastReportDate.plusDays(30);
     }
 
-    public LocalDate getProbation() {
+    public LocalDateTime getLastNotification() {
+        return lastNotification;
+    }
+
+    public void setLastNotification(LocalDateTime lastNotification) {
+        this.lastNotification = lastNotification;
+    }
+
+    public LocalDateTime getProbation() {
         return probation;
     }
 
-    public void setProbation(LocalDate probation) {
+    public void setProbation(LocalDateTime probation) {
         this.probation = probation;
     }
 
@@ -36,11 +46,11 @@ public class ParentUser {
         this.shelterUserId = shelterUserId;
     }
 
-    public LocalDate getLastReportDate() {
+    public LocalDateTime getLastReportDate() {
         return lastReportDate;
     }
 
-    public void setLastReportDate(LocalDate lastReportDate) {
+    public void setLastReportDate(LocalDateTime lastReportDate) {
         this.lastReportDate = lastReportDate;
     }
 
@@ -50,5 +60,13 @@ public class ParentUser {
 
     public Long getId() {
         return id;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

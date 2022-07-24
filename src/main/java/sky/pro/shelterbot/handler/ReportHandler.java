@@ -46,10 +46,10 @@ public class ReportHandler {
 		
 		ReportMessage message = (ReportMessage) map.get(reportStage).getMessage();
 	    if(!message.processReport(userMessage)) {
-	         message.send(userMessage.getUserTelegramId());
+	         message.send(userMessage);
 	    } else {
 	        reportStage = ReportStage.values()[reportStage.ordinal() + 1]; // next state
-	        map.get(reportStage).send(userMessage.getUserTelegramId());
+	        map.get(reportStage).send(userMessage);
 	    }
 	    
 	    return reportStage;
