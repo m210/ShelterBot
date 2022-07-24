@@ -1,6 +1,7 @@
 package sky.pro.shelterbot.service;
 
 import sky.pro.shelterbot.model.ParentUser;
+import sky.pro.shelterbot.model.ShelterType;
 import sky.pro.shelterbot.model.ShelterUser;
 
 import java.util.List;
@@ -10,6 +11,8 @@ public interface UserService {
     ParentUser findParentByUserId(long id);
 
     ShelterUser findUserByTelegramId(long id);
+
+    List<ShelterUser> findAllByType(ShelterType type);
 
     ShelterUser findUserById(long id);
 

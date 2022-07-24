@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sky.pro.shelterbot.UserNotFoundException;
+import sky.pro.shelterbot.handler.UserMessage;
 import sky.pro.shelterbot.model.*;
+import sky.pro.shelterbot.response.ResponseMessage;
 import sky.pro.shelterbot.service.CallVolunteerService;
 import sky.pro.shelterbot.service.ReportService;
 import sky.pro.shelterbot.service.UserService;
@@ -37,6 +39,11 @@ public class VolunteerController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("findAllByType")
+    public ResponseEntity<List<ShelterUser>> findAllByType(ShelterType type) {
+        return ResponseEntity.ok(userService.findAllByType(type));
+    }
+
     @GetMapping("registerUserAsParent")
     public ResponseEntity<ParentUser> registerUserAsParent(long userId, String phoneNumber) {
         ParentUser user = userService.findParentByUserId(userId);
@@ -49,7 +56,12 @@ public class VolunteerController {
             return ResponseEntity.notFound().build();
         }
 
-        reportService.sendMessageToUser(userId, "Поздравляем, Вы были зарегистрированы как усыновитель. Теперь Вам необходимо отправлять отчет каждый день в течении испытательного срока 3 месяца.");
+        reportService.sendMessageToUser(userId, "Поздравляем, Вы были зарегистрированы как усыновитель. Теперь Вам необходимо отправлять отчет каждый день в течении испытательного срока 1 месяца.");
+
+        UserMessage message = new UserMessage();
+        ShelterUser shelterUser = userService.findUserById(userId);
+        message.setUserId(shelterUser.getTelegramId());
+        ResponseMessage.MAIN_MENU_MESSAGE.send(message);
         return ResponseEntity.ok(user);
     }
 

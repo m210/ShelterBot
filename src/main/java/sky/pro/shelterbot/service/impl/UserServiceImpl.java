@@ -86,6 +86,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public List<ShelterUser> findAllByType(ShelterType type) {
+		return userRepository.findAllByType(type);
+	}
+
+	@Override
 	public ShelterUser findUserById(long id) {
 		return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 	}

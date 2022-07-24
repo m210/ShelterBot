@@ -69,7 +69,6 @@ public enum ResponseMessage {
 	DOG_HOW_TO_KENOLOGIST_RECOMMENDS(new RepositoryResponseMessage("/how_to_adopt_dog_ken_rec")),
 	DOG_HOW_TO_KENOLOGIST_ADVICE(new RepositoryResponseMessage("/how_to_adopt_dog_ken_advice")),
 	DOG_HOW_TO_REFUSAL(new RepositoryResponseMessage("/how_to_adopt_dog_refusal")),
-
 	;
 
 

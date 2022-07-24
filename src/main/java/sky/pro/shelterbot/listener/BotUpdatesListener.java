@@ -60,7 +60,7 @@ public class BotUpdatesListener implements UpdatesListener {
             LocalDateTime now = LocalDateTime.now();
 
             Period probationPeriod = Period.between(now.toLocalDate(), parent.getProbation().toLocalDate());
-            if(probationPeriod.getDays() > 0) {
+            if(probationPeriod != null && probationPeriod.getDays() > 0) {
                 Period period = Period.between(parent.getLastReportDate().toLocalDate(), now.toLocalDate());
                 int diff = period.getDays();
 
@@ -75,7 +75,11 @@ public class BotUpdatesListener implements UpdatesListener {
                     userService.saveParent(parent);
                 }
             } else {
-                telegramBot.execute(new SendMessage(userService.findTelegramIdByParent(parent), "Поздравляем! Вы прошли испытательный срок."));
+                if(probationPeriod != null) {
+                    telegramBot.execute(new SendMessage(userService.findTelegramIdByParent(parent), "Поздравляем! Вы прошли испытательный срок."));
+                    parent.setProbation(null);
+                    userService.saveParent(parent);
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 package sky.pro.shelterbot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pengrad.telegrambot.model.Contact;
 
 import javax.persistence.Entity;
@@ -12,6 +13,8 @@ public class ShelterUser {
 	@Id
 	@GeneratedValue
 	private Long id;
+
+	@JsonIgnore
 	private long telegramId;
 	private String firstName;
 	private String lastName;
