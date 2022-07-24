@@ -8,7 +8,8 @@ public class HealthReportMessage extends ReportMessage {
 
     @Override
     public String getMessageText() {
-        return "Пожалуйста, пришлите данные о самочувствии животного. Не менее 10 символов";
+        return getMessageService().getResponseMessage("/report_health");
+        //return "Пожалуйста, пришлите данные о самочувствии животного. Не менее 10 символов";
     }
 
     @Override
@@ -17,7 +18,7 @@ public class HealthReportMessage extends ReportMessage {
             return false;
         }
 
-        service.addHealth(userMessage.getMessage(), userMessage.getUserId(), LocalDate.now());
+        service.addHealth(userMessage.getMessage(), userMessage.getUserTelegramId(), LocalDate.now());
         return true;
     }
 }

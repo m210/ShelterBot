@@ -4,7 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import sky.pro.shelterbot.model.Report;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface ReportRepository extends JpaRepository<Report, Long>  {
-    Report getReportByUserIdAndAndDate(Long userId, LocalDate date);
+
+    Report getReportByParentIdAndDate(Long parentId, LocalDate date);
+
+    List<Report> findAllByParentId(Long parentId);
+
 }

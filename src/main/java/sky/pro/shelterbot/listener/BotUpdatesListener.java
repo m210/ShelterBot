@@ -4,20 +4,26 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.GetFile;
+import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.GetFileResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import sky.pro.shelterbot.handler.MessageHandler;
 import sky.pro.shelterbot.handler.UserMessage;
+import sky.pro.shelterbot.message.MessageConstants;
+import sky.pro.shelterbot.model.ParentUser;
 import sky.pro.shelterbot.service.BotResponseService;
+import sky.pro.shelterbot.service.CallVolunteerService;
 import sky.pro.shelterbot.service.ReportService;
-import sky.pro.shelterbot.service.impl.ReportServiceImpl;
 import sky.pro.shelterbot.service.UserService;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 
 @Service
@@ -30,23 +36,57 @@ public class BotUpdatesListener implements UpdatesListener {
     private TelegramBot telegramBot;
 
     @Autowired
-    private BotResponseService botResponseService;
-
-    @Autowired
-    private ReportService reportService;
-
-    @Autowired
     private UserService userService;
 
+    @Autowired
+    private CallVolunteerService callVolunteerService;
+
     // Обработчик сообщений
+    @Autowired
     private MessageHandler handler;
 
     // Настройка в качестве листинера (обработчика сообщений) объект данного класса
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
-        handler = new MessageHandler(userService);
-        handler.init(telegramBot, botResponseService, reportService);
+    }
+
+    //@Scheduled(cron = "*/1 * * * * *") //sec
+    @Scheduled(cron = "0 0/1 * * * *") //minute
+    //@Scheduled(cron = "0 0 10-22 * * *") //since 10 to 22 o'clock of every day.
+    public void run() {
+        List<ParentUser> list = userService.findAllParents();
+        for(ParentUser parent : list) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime probation = parent.getProbation();
+
+            Period probationPeriod = null;
+            if(probation != null) {
+                probationPeriod = Period.between(now.toLocalDate(), probation.toLocalDate());
+            }
+
+            if(probationPeriod != null && probationPeriod.getDays() > 0) {
+                Period period = Period.between(parent.getLastReportDate().toLocalDate(), now.toLocalDate());
+                int diff = period.getDays();
+
+                if (diff >= 1 && (parent.getLastNotification() == null || now.isAfter(parent.getLastNotification()))) {
+                    long telegramId = userService.findTelegramIdByParent(parent);
+                    telegramBot.execute(new SendMessage(telegramId, "Напоминаем Вам об отправке отчета"));
+                    if(diff >= 3) {
+                        telegramBot.execute(new SendMessage(telegramId, "Вы не отправляли отчет больше 3х дней, зову волонтера!"));
+                        callVolunteerService.saveCall(parent);
+                    }
+                    parent.setLastNotification(now.plusHours(6));
+                    userService.saveParent(parent);
+                }
+            } else {
+                if(probation != null) {
+                    telegramBot.execute(new SendMessage(userService.findTelegramIdByParent(parent), "Поздравляем! Вы прошли испытательный срок."));
+                    parent.setProbation(null);
+                    userService.saveParent(parent);
+                }
+            }
+        }
     }
 
     /**
@@ -79,6 +119,13 @@ public class BotUpdatesListener implements UpdatesListener {
                 userMessage.setUserId(message.chat().id());
                 userMessage.setMessage(message.text());
                 userMessage.setUser(message.from());
+            } else if (hasContacts(message)) {
+                logger.info("The message has a contact");
+
+                userMessage.setUserId(message.chat().id());
+                userMessage.setMessage(MessageConstants.USER_CONTACTS);
+                userMessage.setContact(message.contact());
+                userMessage.setUser(message.from());
             } else if (hasPictureMessage(message)) {
                 logger.info("The message has a photo");
 
@@ -105,7 +152,7 @@ public class BotUpdatesListener implements UpdatesListener {
                 }
             }
 
-            if (userMessage.getUserId() != -1) { // если сообщение имеет текст, отправляем его в обработчик
+            if (userMessage.getUserTelegramId() != -1) { // если сообщение имеет текст, отправляем его в обработчик
                 handler.processMessage(userMessage);
             }
         });
@@ -115,6 +162,10 @@ public class BotUpdatesListener implements UpdatesListener {
 
     private boolean hasTextMessage(Message message) {
         return message.text() != null;
+    }
+
+    private boolean hasContacts(Message message) {
+        return message.contact() != null;
     }
 
     private boolean hasPictureMessage(Message message) {

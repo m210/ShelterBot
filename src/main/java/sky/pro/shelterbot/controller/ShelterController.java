@@ -5,11 +5,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sky.pro.shelterbot.model.BotResponse;
+import sky.pro.shelterbot.model.*;
 import sky.pro.shelterbot.service.BotResponseService;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("volunteer")
+@RequestMapping("BotResponse")
 public class ShelterController {
 
     private final BotResponseService shelterService;

@@ -7,12 +7,11 @@ import sky.pro.shelterbot.message.report.ReportMessage;
 import sky.pro.shelterbot.model.ReportStage;
 import sky.pro.shelterbot.response.ResponseMessage;
 import sky.pro.shelterbot.service.ReportService;
-import sky.pro.shelterbot.service.impl.ReportServiceImpl;
 
 public class ReportHandler {
 	
 	private final Map<ReportStage, ResponseMessage> map = new HashMap<>();
-	private ReportStage reportStage = ReportStage.COMPLETE;
+	private ReportStage reportStage = ReportStage.CANCELED;
 	
 	public void init(ReportService reportService) {
 		map.put(ReportStage.PHOTO, ResponseMessage.PHOTO_REPORTMESSAGE);
@@ -22,12 +21,15 @@ public class ReportHandler {
 		map.put(ReportStage.COMPLETE, ResponseMessage.COMPLETE_REPORTMESSAGE);
 		
 		for(ResponseMessage message : map.values()) {
-			((ReportMessage) message.getMessage()).setService(reportService);
+			if(message.getMessage() instanceof ReportMessage) {
+				((ReportMessage) message.getMessage()).setService(reportService);
+			}
 		}
+		((ReportMessage) ResponseMessage.SEND_REPORT_MESSAGE.getMessage()).setService(reportService);
 	}
 	
 	public boolean requireReport() {
-		return reportStage != ReportStage.COMPLETE;
+		return reportStage != ReportStage.COMPLETE && reportStage != ReportStage.CANCELED;
 	}
 	
 	public void startReport() {
@@ -35,23 +37,23 @@ public class ReportHandler {
 	}
 	
 	public void cancelReport() {
-		reportStage = ReportStage.COMPLETE;
+		reportStage = ReportStage.CANCELED;
 	}
 	
-	public boolean processReport(UserMessage userMessage) {
+	public ReportStage processReport(UserMessage userMessage) {
 		if(userMessage.getMessage() != null && userMessage.getMessage().equals("Отмена")) {
 			cancelReport();
-            return false;
+            return ReportStage.CANCELED;
         }
 		
 		ReportMessage message = (ReportMessage) map.get(reportStage).getMessage();
 	    if(!message.processReport(userMessage)) {
-	         message.send(userMessage.getUserId());
+	         message.send(userMessage);
 	    } else {
 	        reportStage = ReportStage.values()[reportStage.ordinal() + 1]; // next state
-	        map.get(reportStage).send(userMessage.getUserId());
+	        map.get(reportStage).send(userMessage);
 	    }
 	    
-	    return true;
+	    return reportStage;
 	}
 }
